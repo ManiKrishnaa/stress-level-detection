@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress Level Detection</title>
+    <style>
+        body {
+            font-family: 'Book Antiqua', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px; 
+            height: 90vh;
+        }
+
+        .left-block {
+            background-color: #1D3557;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            height: 100%;
+            padding: 0 20px;
+        }
+
+        .left-block h1 {
+            font-size: 36px;
+            text-align: center;
+            color: white;
+        }
+
+        .right-block {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #1D3557;
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #1D3557;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        button {
+            background-color: #1D3557;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #457b9d;
+        }
+
+        .prediction {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%; 
+            padding-left: 400px;
+        }
+
+
+        .pred {
+            font-family: 'Book Antiqua', sans-serif;
+            font-size: 20px;
+            color: gray;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-block, .right-block {
+                width: 100%;
+                height: auto;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if prediction_text %}
+        <div class="prediction">
+            <p class="pred">{{ prediction_text }}</p>
+        </div>
+        {% else %}
+        <div class="left-block">
+            <h1>Stress Level Detection</h1>
+        </div>
+
+        <div class="right-block">
+            <div class="form-container">
+                
+                <form action="/predict" method="post">
+                    <div class="form-group">
+                        <label for="snoring">Do you snore when you sleep?</label>
+                        <select name="snoring" id="snoring">
+                            <option value="Not at all">Not at all</option>
+                            <option value="Sometimes">Sometimes</option>
+                            <option value="Often">Often</option>
+                            <option value="Always">Always</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="respiration">How would you describe your breathing during sleep?</label>
+                        <select name="respiration" id="respiration">
+                            <option value="Normal and steady">Normal and steady</option>
+                            <option value="Slightly rapid">Slightly rapid</option>
+                            <option value="Often rapid">Often rapid</option>
+                            <option value="Very rapid">Very rapid</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="body_temperature">Do you often feel hot or cold while resting?</label>
+                        <select name="body_temperature" id="body_temperature">
+                            <option value="Normal">Normal (95-98°F)</option>
+                            <option value="A bit warm">A bit warm (98-100°F)</option>
+                            <option value="Quite warm">Quite warm (100-102°F)</option>
+                            <option value="Very warm">Very warm (102-104°F)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="limb_movement">Do you move a lot in your sleep?</label>
+                        <select name="limb_movement" id="limb_movement">
+                            <option value="Not at all">Not at all</option>
+                            <option value="Slightly">Slightly</option>
+                            <option value="Moderately">Moderately</option>
+                            <option value="A lot">A lot</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blood_oxygen">Do you experience any shortness of breath while resting?</label>
+                        <select name="blood_oxygen" id="blood_oxygen">
+                            <option value="Never">Never (95-100%)</option>
+                            <option value="Rarely">Rarely (90-94%)</option>
+                            <option value="Sometimes">Sometimes (85-89%)</option>
+                            <option value="Often">Often (80-84%)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eye_movement">Do you feel like you dream a lot or have restless sleep?</label>
+                        <select name="eye_movement" id="eye_movement">
+                            <option value="Not at all">Not at all</option>
+                            <option value="Sometimes">Sometimes</option>
+                            <option value="Often">Often</option>
+                            <option value="Very often">Very often</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sleep">How many hours of sleep do you usually get?</label>
+                        <select name="sleep" id="sleep">
+                            <option value="Less than 4 hours">Less than 4 hours</option>
+                            <option value="4-6 hours">4-6 hours</option>
+                            <option value="6-8 hours">6-8 hours</option>
+                            <option value="8+ hours">8+ hours</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="heart_rate">How would you describe your resting heart rate?</label>
+                        <select name="heart_rate" id="heart_rate">
+                            <option value="Very slow">Very slow (40-60 bpm)</option>
+                            <option value="Slow">Slow (60-80 bpm)</option>
+                            <option value="Moderate">Moderate (80-100 bpm)</option>
+                            <option value="Fast">Fast (100-120 bpm)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
